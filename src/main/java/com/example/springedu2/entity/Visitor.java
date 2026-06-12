@@ -9,6 +9,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Entity
 @Getter
 @Setter
@@ -17,7 +20,7 @@ import org.hibernate.annotations.CreationTimestamp;
 public class Visitor {
 
     @Id // 기본키 : primary key
-    @GeneratedValue(strategy = GenerationType.AUTO) //  번호 자동 증가
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //  번호 자동 증가
     private Integer id; // 방명록 번호 id : 기본키
 
     // 작성자: name
@@ -32,7 +35,7 @@ public class Visitor {
     // Column
     @CreationTimestamp
     @Column(name="writedate", nullable = false, updatable = false)
-    private String writeDate;
+    private LocalDate writeDate;
 
     // 방명록 내용: memo
     @NotBlank(message = "입력해 주세요.")
