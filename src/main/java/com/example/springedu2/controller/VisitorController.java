@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class VisitorController {
@@ -33,9 +35,29 @@ public class VisitorController {
     // @RequiredArgsConstructor  최상단에 필수 :  Lombok 필수 사용
     private final VisitorRepository visitorRepository;
 
+    // 방명록 조회
     @GetMapping("/vlist")
     public ModelAndView vlist(){
-        return null;
+        
+        List<Visitor> visitors = visitorRepository.findAll();
+        return visitorView(visitors, null);
+    }
+
+    private ModelAndView visitorView(List<Visitor> visitors, String buttonText) {
+        ModelAndView mv = new ModelAndView("visitorView");
+        //mv.setViewName("visitorView"); // visitorview.html(모델 사용) - thymeleaf
+        if( visitors.isEmpty()){
+            mv.addObject("msg", "조회된 결과가 없습니다");
+
+        } else {
+            mv.addObject("vList", visitors);
+        }
+        if( buttonText != null ) {
+            mv.addObject("buttonText", buttonText);
+
+        }
+        mv.addObject("vList", visitors);
+        return  mv;
     }
 
     @GetMapping("/vsearch")
