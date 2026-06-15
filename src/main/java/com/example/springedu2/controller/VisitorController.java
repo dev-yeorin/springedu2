@@ -50,24 +50,18 @@ public class VisitorController {
     private ModelAndView visitorView(List<Visitor> visitors, String buttonText) {
         ModelAndView mv = new ModelAndView("visitorView");
         //mv.setViewName("visitorView"); // visitorview.html(모델 사용) - thymeleaf
-        if( visitors.isEmpty()){
+        if (visitors.isEmpty()) {
             mv.addObject("msg", "조회된 결과가 없습니다");
 
         } else {
             mv.addObject("vList", visitors);
         }
-        if( buttonText != null ) {
+        if (buttonText != null) {
             mv.addObject("buttonText", buttonText);
 
         }
         mv.addObject("vList", visitors);
-        return  mv;
-    }
-
-    // /vsearch: 검색
-    @GetMapping("/vsearch")
-    public ModelAndView vsearch(){
-        return null;
+        return mv;
     }
 
     // 방명록 추가
@@ -140,4 +134,32 @@ public class VisitorController {
 
         return "redirect:/vlist";
     }
-}
+
+    // /vdelete
+    @PostMapping("/vdelete")
+    @Transactional
+    public String delete(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
+        if (!visitorRepository.existsById(Long.valueOf(id))) {
+                redirectAttributes.addFlashAttribute("msg",
+                        "삭제할 방명록이 없습니다.");
+                return "redirect:/vlist";
+        }
+        visitorRepository.deleteById(Long.valueOf(id));
+        return "redirect:/vlist";
+    }
+
+    // /vsearch
+    // findByMemoContainingIgnoreCaseOrderByIdDesc(key)
+    // 검색: 모두 대문자로 검색어를 포함한 data
+    // 단    정렬은 id를 내림차순으로 출력
+    @GetMapping("/vsearch")
+    public  ModelAndView vsearch(@RequestParam(defaultValue = "") String key) {
+        List<Visitor> visitors = key.isBlank()
+                ?   visitorRepository.findAll()
+                :   visitorRepository.findByMemoContainingIgnoreCaseOrderByIdDesc(key);
+        System.out.print( visitors );
+
+        return visitorView(visitors, "메인으로 돌아가기");
+    }
+
+} // Controller End

@@ -33,7 +33,7 @@
                 <td>
                 <form method="post" th:action="@{vdelete}"
                 onsubmit="return confirm('삭제하시겠습니까?')">
-                <input type="hidden" name="" th:value="${vo.id}" />
+                <input type="hidden" name="id" th:value="${vo.id}" />
                 <button type="submit" class="icon-button">
                 <img src="/img/delete.png" width="30" alt="삭제" />
                 </button>
